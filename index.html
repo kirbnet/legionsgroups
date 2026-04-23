@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legions Link Directory</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .parchment-bg { background-color: #fcfaf7; }
+    </style>
+</head>
+<body class="parchment-bg text-slate-900 transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100">
+
+    <div class="max-w-6xl mx-auto px-6 py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 uppercase text-slate-800 dark:text-white">
+                Legions Directory
+            </h1>
+            <p class="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                A curated collection of community groups, trading posts, and customizer hubs.
+            </p>
+        </header>
+
+        <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-10">
+            <div class="relative w-full md:w-96">
+                <input type="text" id="searchInput" placeholder="Search groups..." 
+                       class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 focus:ring-2 focus:ring-red-500 outline-none transition">
+            </div>
+            
+            <div id="filterButtons" class="flex flex-wrap gap-2 justify-center">
+                <button class="filter-btn px-4 py-2 rounded-full bg-slate-800 text-white text-sm font-semibold transition active" data-category="all">All</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition" data-category="Cabal">Cabal</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition" data-category="Fan">Fan</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition" data-category="BST">B/S/T</button>
+                <button class="filter-btn px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-700 transition" data-category="Regional">Regional</button>
+            </div>
+        </div>
+
+        <div id="directoryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+    </div>
+
+    <script>
+        // DATA BACKEND (JSON)
+        const groups = [
+            // --- CABAL ---
+            {
+                name: "Mythic Legions Cabal",
+                category: "Cabal",
+                desc: "The primary community hub for fans of Four Horsemen Studios. Primary focus is on Mythic Legions.",
+                url: "https://www.facebook.com/groups/mythiclegionscabal",
+                img: "mythiclegionscabal.jpg"
+            },
+            {
+                name: "Cosmic Legions Cabal",
+                category: "Cabal",
+                desc: "Cabal focused on Cosmic Legions",
+                url: "https://www.facebook.com/groups/thecosmiccabal/",
+                img: "cosmiclegionscabal.jpg"
+            },
+            {
+                name: "Figura Obscura Cabal",
+                category: "Cabal",
+                desc: "Cabal focused on the Figura Obscura line of figures.",
+                url: "https://www.facebook.com/groups/figuraobscuracabal/",
+                img: "figuraobscuracabal.jpg"
+            },
+            {
+                name: "Infinite Legions Cabal",
+                category: "Cabal",
+                desc: "Cabal focused on Infinite Legions",
+                url: "https://www.facebook.com/groups/infinitelegionscabal",
+                img: "infinitelegionscabal.jpg"
+            },
+
+
+            // --- FAN ---
+            {
+                name: "Eathyron’s Vanguard",
+                category: "Fan",
+                desc: "Mythic Legions Knights fans",
+                url: "https://www.facebook.com/groups/775583137379867/",
+                img: "eathyronsvanguard.jpg"
+            },
+            {
+                name: "Fiends of the Netherrealm",
+                category: "Fan",
+                desc: "Fan group for Mythic Legions villains/demons",
+                url: "https://www.facebook.com/groups/982422016947170/",
+                img: "fiends.jpg"
+            },
+            {
+                name: "Fizzlebottom: Gnome Coming",
+                category: "Fan",
+                desc: "Fan group for fans of Mythic Legions Gnomes",
+                url: "https://www.facebook.com/groups/876598450942498/",
+                img: "fizzlebottom.jpg"
+            },
+            {
+                name: "Furious Family",
+                category: "Fan",
+                desc: "A Mythic Legions Fury Clan Fan Club",
+                url: "https://www.facebook.com/groups/701550068277774",
+                img: "furiousfamily.jpg"
+            },
+            {
+                name: "Kings Under the Mountain",
+                category: "Fan",
+                desc: "Fan Page for the Dwarfs of Mythic Legions",
+                url: "https://www.facebook.com/groups/300077378571878/",
+                img: "kingsunderthemountain.jpg"
+            },
+            {
+                name: "Legions CabA.I.l",
+                category: "Fan",
+                desc: "Legions fan group focusing on AI",
+                url: "https://www.facebook.com/groups/1995418834330442/",
+                img: "cabail.jpg"
+            },
+            {
+                name: "Legions Ladies",
+                category: "Fan",
+                desc: "Group for female fans of Mythic Legions",
+                url: "https://www.facebook.com/groups/613368343666541/",
+                img: "legionsladies.jpg"
+            },
+            {
+                name: "Mythic Legions Cosplay Group",
+                category: "Fan",
+                desc: "Group focused on Mythic Legions Cosplay",
+                url: "https://www.facebook.com/groups/legionscosplay/",
+                img: "cosplay.jpg"
+            },
+            {
+                name: "Mythic Legions: The Role Playing Game",
+                category: "Fan",
+                desc: "Public group focusing on the RPG",
+                url: "https://www.facebook.com/groups/1038101407728762/",
+                img: "mltrpg.jpg"
+            },
+            {
+                name: "Nat20 Mythic Adventures",
+                category: "Fan",
+                desc: "Group focused on Mythic Legions: The Roleplaying Game",
+                url: "https://www.facebook.com/groups/3067656956731715/",
+                img: "nat20.jpg"
+            },
+            {
+                name: "Pillage and Plunder!",
+                category: "Fan",
+                desc: "Mythic Legions Barbarians",
+                url: "https://www.facebook.com/groups/pillageandplunder",
+                img: "pillageandplunder.jpg"
+            },
+            {
+                name: "Sons of the Cryptbreaker",
+                category: "Fan",
+                desc: "Mythic Legions fans of Sons of the Red Star",
+                url: "https://www.facebook.com/groups/1261675884530236",
+                img: "sonscryptbreaker.jpg"
+            },
+            {
+                name: "The Brood",
+                category: "Fan",
+                desc: "Mythic Legions Vampires",
+                url: "https://www.facebook.com/groups/870717694057462/",
+                img: "thebrood.jpg"
+            },
+            {
+                name: "The Crypt",
+                category: "Fan",
+                desc: "A Mythic & Cosmic Legions Skeleton Fan Group",
+                url: "https://www.facebook.com/groups/5039062452795999/",
+                img: "thecrypt.jpg"
+            },
+            {
+                name: "The Ethereal Congregation",
+                category: "Fan",
+                desc: "For fans of Mythic Legionsn Elves",
+                url: "https://www.facebook.com/groups/680596480432579",
+                img: "etherealcongregation.jpg"
+            },
+            {
+                name: "The Horde",
+                category: "Fan",
+                desc: "Sub-group for Mythic Legions Orc Lovers",
+                url: "https://www.facebook.com/groups/585064656467759/",
+                img: "thehorde.jpg"
+            },
+            {
+                name: "The Malignancy",
+                category: "Fan",
+                desc: "A Group for fans of Mythic Legions Goblins",
+                url: "https://www.facebook.com/groups/themalignancy/",
+                img: "malignancy.png"
+            },
+            {
+                name: "The Order of the Dragon",
+                category: "Fan",
+                desc: "a Mythic Legions fan group focused on Dragons",
+                url: "https://www.facebook.com/groups/1044562334190648/",
+                img: "theorderofthedragon.jpg"
+            },
+            {
+                name: "The Realm of Mythoss",
+                category: "Fan",
+                desc: "Customs, collection, and trading",
+                url: "https://www.facebook.com/groups/575987915934851/",
+                img: "realmofmythoss.jpg"
+            },
+            {
+                name: "The Trough",
+                category: "Fan",
+                desc: "Fan group for fans of Mythic Legions Boarrior",
+                url: "https://www.facebook.com/groups/boarrior",
+                img: "thetrough.jpg"
+            },
+            {
+                name: "Troll Head Forest",
+                category: "Fan",
+                desc: "Mythic Legions Trolls Fans",
+                url: "https://www.facebook.com/groups/595132219156921/",
+                img: "trollsheadforest.jpg"
+            },
+
+            // --- BST ---
+            {
+                name: "Mythic & Cosmic Legions/4HM - B/S/T & Discussion Group",
+                category: "BST",
+                desc: "Buy/Sell/Trade",
+                url: "https://www.facebook.com/groups/842456615852438/",
+                img: "bst2.jpg"
+            },
+            {
+                name: "Mythic Legions Buy/Sell/Trade/Collect",
+                category: "BST",
+                desc: "Buy/Sell/Trade/Collect",
+                url: "https://www.facebook.com/groups/mythiclegionsbstc/",
+                img: "bstc.jpg"
+            },
+            {
+                name: "Mythic Legions Collecting Customizing B/S/T",
+                category: "BST",
+                desc: "Buy/Sell/Trade",
+                url: "https://www.facebook.com/groups/131072627485345/",
+                img: "bst3.jpg"
+            },
+            {
+                name: "Mythic Legions: Buy, Sell, And Trade Only",
+                category: "BST",
+                desc: "Buy/Sell/Trade",
+                url: "https://www.facebook.com/groups/633001403564241/",
+                img: "bst4.jpg"
+            },
+            {
+                name: "Mythic Legions Collectors Group",
+                category: "BST",
+                desc: "Bring fans of Mythic Legions together",
+                url: "https://www.facebook.com/groups/965475770216971/",
+                img: "mlcollectorsgroup.jpg"
+            },
+            {
+                name: "Mythic Legions Marketplace and Collectors group",
+                category: "BST",
+                desc: "Group is centered around Mythic Legions and other similar lines.",
+                url: "https://www.facebook.com/groups/MythicLegionsMarketplace/",
+                img: "marketplace.jpg"
+            },
+            // --- REGIONAL ---
+            {
+                name: "Coleccionistas Mythic Legions Chile",
+                category: "Regional",
+                desc: "For collectors in Chile",
+                url: "https://www.facebook.com/groups/839747380103432/",
+                img: "collectorschil.jpg"
+            },
+            {
+                name: "HỘI MÔ HÌNH MYTHIC LEGIONS VÀ QUÁI VẬT",
+                category: "Regional",
+                desc: "For collectors in Vietnam",
+                url: "https://www.facebook.com/groups/3812251308884075/",
+                img: "collectorsviet.jpg"
+            },
+            {
+                name: "Indiana Legions Fans",
+                category: "Regional",
+                desc: "For collectors in Indiana",
+                url: "https://www.facebook.com/groups/1384333773137128/",
+                img: "collectorsin.jpg"
+            },
+            {
+                name: "Kentucky Mythic/Cosmic Legions Collectors of Louisville",
+                category: "Regional",
+                desc: "For collectors in Kentucky",
+                url: "https://www.facebook.com/groups/1265772442257984/",
+                img: "collectorsky.jpg"
+            },
+            {
+                name: "Knights of the North",
+                category: "Regional",
+                desc: "For collectors in Cananda",
+                url: "https://www.facebook.com/groups/712176516113217/",
+                img: "collectorsca.jpg"
+            },
+            {
+                name: "Mythic & Cosmic Legions France",
+                category: "Regional",
+                desc: "For collectors in France",
+                url: "https://www.facebook.com/groups/mythiclegionsfrance/",
+                img: "collectorsfr.jpg"
+            },
+            {
+                name: "Mythic & Cosmic Legions in Taiwan 神話&宇宙軍團臺灣聯盟",
+                category: "Regional",
+                desc: "For collectors in Taiwan",
+                url: "https://www.facebook.com/groups/1243631009169495/",
+                img: "collectorstw.jpg"
+            },
+            {
+                name: "Mythic & Four Horsemen Europe",
+                category: "Regional",
+                desc: "For collectors in Europe",
+                url: "https://www.facebook.com/groups/635712520582071/",
+                img: "collectorseu2.jpg"
+            },
+            {
+                name: "Mythic Legions Argentina",
+                category: "Regional",
+                desc: "For collectors in Argentina",
+                url: "https://www.facebook.com/groups/1732681727570800/",
+                img: "collectorsarg.jpg"
+            },
+            {
+                name: "Mythic Legions Cabal Midwest Territory",
+                category: "Regional",
+                desc: "For collectors in the Midwest US",
+                url: "https://www.facebook.com/groups/cabalmidwest/",
+                img: "collectorsmw.jpg"
+            },
+            {
+                name: "Mythic Legions Cabal Souteast Territory",
+                category: "Regional",
+                desc: "For collectors in the Southeast US",
+                url: "https://www.facebook.com/groups/cabalsoutheast/",
+                img: "collectorsseus.jpg"
+            },
+            {
+                name: "Mythic Legions Combatant Vietnam",
+                category: "Regional",
+                desc: "For collectors in Vietnam",
+                url: "https://www.facebook.com/groups/mythiclegionsvn/",
+                img: "collectorsvn.jpg"
+            },
+            {
+                name: "Mythic Legions Community Indonesia",
+                category: "Regional",
+                desc: "For collectors in Indonesia",
+                url: "https://www.facebook.com/groups/4150165275015102/",
+                img: "collectorsindo.jpg"
+            },
+            {
+                name: "Mythic Legions European Faction",
+                category: "Regional",
+                desc: "For collectors worldwide, but with emphasis on Europe",
+                url: "https://www.facebook.com/groups/mythiclegionsgf/",
+                img: "collectorseu.jpg"
+            },
+            {
+                name: "Mythic Legions Mexico",
+                category: "Regional",
+                desc: "For collectors in Mexico",
+                url: "https://www.facebook.com/groups/410950652814073/",
+                img: "collectorsmx3.jpg"
+            },
+            {
+                name: "Mythic Legions México - El Collecto",
+                category: "Regional",
+                desc: "For collectors in México",
+                url: "https://www.facebook.com/groups/378712549565034/",
+                img: "collectorsmx2.jpg"
+            },
+            {
+                name: "Mythic Legions Mexico Compra y Venta",
+                category: "Regional",
+                desc: "For collectors in Mexico",
+                url: "https://www.facebook.com/groups/mythiclegionsmexicocomprayventa/",
+                img: "collectorsmx.jpg"
+            },
+            {
+                name: "Mythic Legions Peru",
+                category: "Regional",
+                desc: "For collectors in Peru",
+                url: "https://www.facebook.com/groups/mythic.legions.peru/",
+                img: "collectorsperu.jpg"
+            },
+            {
+                name: "Mythic Legions Puerto Rico",
+                category: "Regional",
+                desc: "For collectors in Puerto Rico",
+                url: "https://www.facebook.com/groups/449051984615368/",
+                img: "collectorspr.jpg"
+            },
+            {
+                name: "Mythic Legions Suits",
+                category: "Regional",
+                desc: "For collectors in Singapore",
+                url: "https://www.facebook.com/groups/452583439311158/",
+                img: "collectorssing.jpg"
+            },
+            {
+                name: "Mythic Legions Thailand",
+                category: "Regional",
+                desc: "For collectors in Thailand",
+                url: "https://www.facebook.com/groups/282932485393974/",
+                img: "collectorstl.jpg"
+            },
+            {
+                name: "Mythic Legions UK",
+                category: "Regional",
+                desc: "For collectors in the UK",
+                url: "https://www.facebook.com/groups/840868119603030/",
+                img: "collectorsuk.jpg"
+            },
+            {
+                name: "Texas Mythic Legions Caballeros",
+                category: "Regional",
+                desc: "For collectors in Texas",
+                url: "https://www.facebook.com/groups/826717645992323/",
+                img: "collectorstx.jpg"
+            },
+            {
+                name: "Utah Mythic Legions",
+                category: "Regional",
+                desc: "For collectors in Utah",
+                url: "https://www.facebook.com/groups/5739940149406237/",
+                img: "collectorsut.jpg"
+            },
+            {
+                name: "We are Legion",
+                category: "Regional",
+                desc: "For Collectors in the Philippines",
+                url: "https://www.facebook.com/groups/mythiclegionpilipinas/",
+                img: "collectorsphil.jpg"
+            }
+        ];
+
+        const grid = document.getElementById('directoryGrid');
+        const searchInput = document.getElementById('searchInput');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+
+        function render(data) {
+            grid.innerHTML = data.map(item => `
+                <a href="${item.url}" target="_blank" class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 border border-slate-100 dark:border-slate-700">
+                    <div class="aspect-video overflow-hidden">
+                        <img src="images/${item.img}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="${item.name}">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-[10px] font-bold tracking-widest uppercase text-red-600 dark:text-red-400 mb-2 block">${item.category}</span>
+                        <h3 class="text-xl font-bold mb-2 group-hover:text-red-600 transition-colors">${item.name}</h3>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm line-clamp-2 mb-4">${item.desc}</p>
+                        <span class="text-sm font-semibold flex items-center">
+                            Join Group <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </span>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // Search logic
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = groups.filter(g => g.name.toLowerCase().includes(term) || g.desc.toLowerCase().includes(term));
+            render(filtered);
+        });
+
+        // Filter logic
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cat = btn.dataset.category;
+                filterBtns.forEach(b => b.classList.remove('bg-slate-800', 'text-white'));
+                filterBtns.forEach(b => b.classList.add('bg-white', 'dark:bg-slate-800'));
+                btn.classList.add('bg-slate-800', 'text-white');
+                
+                const filtered = cat === 'all' ? groups : groups.filter(g => g.category === cat);
+                render(filtered);
+            });
+        });
+
+        // Initial Load
+        render(groups);
+    </script>
+</body>
+</html>
